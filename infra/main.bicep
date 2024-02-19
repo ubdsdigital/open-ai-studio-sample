@@ -272,6 +272,7 @@ module searchRoleBackend 'core/security/role.bicep' = {
 }
 
 // For doc prep
+/*
 module docPrepResources 'docprep.bicep' = {
   name: 'docprep-resources${resourceToken}'
   params: {
@@ -289,6 +290,7 @@ module docPrepResources 'docprep.bicep' = {
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
+*/
 
 output BACKEND_URI string = backend.outputs.uri
 
@@ -325,9 +327,11 @@ output AZURE_OPENAI_PREVIEW_API_VERSION string = openAIApiVersion
 output AZURE_OPENAI_STREAM bool = openAIStream
 
 // Used by prepdocs.py:
+/*
 output AZURE_FORMRECOGNIZER_SERVICE string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SERVICE
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_RESOURCE_GROUP
 output AZURE_FORMRECOGNIZER_SKU_NAME string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SKU_NAME
+*/
 
 // cosmos
 output AZURE_COSMOSDB_ACCOUNT string = cosmos.outputs.accountName
