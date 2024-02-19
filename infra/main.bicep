@@ -202,7 +202,7 @@ module cosmos 'db.bicep' = {
   scope: resourceGroup
   params: {
     accountName: !empty(cosmosAccountName) ? cosmosAccountName : '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
-    location: 'eastus'
+    location: 'uksouth'
     tags: tags
     principalIds: [principalId, backend.outputs.identityPrincipalId]
   }
@@ -212,41 +212,41 @@ module cosmos 'db.bicep' = {
 // USER ROLES
 module openAiRoleUser 'core/security/role.bicep' = {
   scope: openAiResourceGroup
-  name: 'openai-role-user'
+  name: 'openai-role-sp'
   params: {
     principalId: principalId
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-    principalType: 'User'
+    principalType: 'ServicePrincipal'
   }
 }
 
 module searchRoleUser 'core/security/role.bicep' = {
   scope: searchServiceResourceGroup
-  name: 'search-role-user'
+  name: 'search-role-sp'
   params: {
     principalId: principalId
     roleDefinitionId: '1407120a-92aa-4202-b7e9-c0e197c71c8f'
-    principalType: 'User'
+    principalType: 'ServicePrincipal'
   }
 }
 
 module searchIndexDataContribRoleUser 'core/security/role.bicep' = {
   scope: searchServiceResourceGroup
-  name: 'search-index-data-contrib-role-user'
+  name: 'search-index-data-contrib-role-sp'
   params: {
     principalId: principalId
     roleDefinitionId: '8ebe5a00-799e-43f5-93ac-243d3dce84a7'
-    principalType: 'User'
+    principalType: 'ServicePrincipal'
   }
 }
 
 module searchServiceContribRoleUser 'core/security/role.bicep' = {
   scope: searchServiceResourceGroup
-  name: 'search-service-contrib-role-user'
+  name: 'search-service-contrib-role-sp'
   params: {
     principalId: principalId
     roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0'
-    principalType: 'User'
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -272,6 +272,7 @@ module searchRoleBackend 'core/security/role.bicep' = {
 }
 
 // For doc prep
+
 module docPrepResources 'docprep.bicep' = {
   name: 'docprep-resources${resourceToken}'
   params: {
@@ -289,6 +290,7 @@ module docPrepResources 'docprep.bicep' = {
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
+
 
 output BACKEND_URI string = backend.outputs.uri
 
@@ -325,9 +327,11 @@ output AZURE_OPENAI_PREVIEW_API_VERSION string = openAIApiVersion
 output AZURE_OPENAI_STREAM bool = openAIStream
 
 // Used by prepdocs.py:
+
 output AZURE_FORMRECOGNIZER_SERVICE string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SERVICE
 output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_RESOURCE_GROUP
 output AZURE_FORMRECOGNIZER_SKU_NAME string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SKU_NAME
+
 
 // cosmos
 output AZURE_COSMOSDB_ACCOUNT string = cosmos.outputs.accountName
