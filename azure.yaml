@@ -40,6 +40,6 @@ hooks:
         continueOnError: false
       posix:
         shell: sh
-        run: ./scripts/auth_update.sh;
+        run: ./scripts/auth_update.sh;./scripts/prepdocs.sh;
         interactive: true
         continueOnError: false

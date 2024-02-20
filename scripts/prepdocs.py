@@ -230,7 +230,8 @@ if __name__ == "__main__":
         endpoint=f"https://{args.formrecognizerservice}.cognitiveservices.azure.com/",
         credential=formrecognizer_creds,
     )
-    create_and_populate_index(
-        args.index, index_client, search_client, form_recognizer_client, azd_credential, args.embeddingendpoint
-    )
+    # create_and_populate_index(
+    #     args.index, index_client, search_client, form_recognizer_client, azd_credential, args.embeddingendpoint
+    # )
+    create_search_index(args.index, index_client)
     print("Data preparation for index", args.index, "completed")
