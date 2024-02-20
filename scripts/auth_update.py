@@ -45,4 +45,4 @@ if __name__ == "__main__":
     print(
         f"Updating application registration {args.appid} with redirect URI for {args.uri}"
     )
-    update_redirect_uris(credential, args.appid, args.uri)
+    # update_redirect_uris(credential, args.appid, args.uri)
