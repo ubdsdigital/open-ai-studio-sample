@@ -36,7 +36,7 @@ steps:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
-        azd provision --no-prompt
+        azd provision --no-prompt --debug
     env:
       AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
       AZURE_ENV_NAME: $(AZURE_ENV_NAME)
@@ -56,7 +56,7 @@ steps:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
-        azd deploy --no-prompt
+        azd deploy --no-prompt --debug
     env:
       AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
       AZURE_ENV_NAME: $(AZURE_ENV_NAME)
