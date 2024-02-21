@@ -1,6 +1,7 @@
 import argparse
 
 from azure.identity import AzureDeveloperCliCredential
+import azure.identity as id
 import urllib3
 
 
@@ -48,7 +49,14 @@ if __name__ == "__main__":
     except:
         print("An exception occured")
 
-        
+# Another credential test
+    try: 
+        credential = id.AzureDeveloperCliCredential()
+    except id.CredentialUnavailableError:
+        print("Credential Unavailable Error")
+    except id.CredentialAuthenticationError:
+        print("ClientAuthenticationError")
+
     print(
         f"Updating application registration {args.appid} with redirect URI for {args.uri}"
     )
