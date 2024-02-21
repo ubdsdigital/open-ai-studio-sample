@@ -43,8 +43,12 @@ if __name__ == "__main__":
     credential = AzureDeveloperCliCredential()
 
 # Testing to see what the credential is
-    print(f"Here is the credential {credential}")
-    
+    try:
+        print(f"Here is the credential {credential}")
+    except:
+        print("An exception occured")
+
+        
     print(
         f"Updating application registration {args.appid} with redirect URI for {args.uri}"
     )
