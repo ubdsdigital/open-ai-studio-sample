@@ -32,7 +32,7 @@ steps:
   - task: AzureCLI@2
     displayName: Provision Infrastructure
     inputs:
-      azureSubscription: ubds-development-subscription-service-connection # Change to the service connection to deploy in right subscription
+      azureSubscription: ubds-development-subscription-service-connection-admin.nathan # Change to the service connection to deploy in right subscription
       scriptType: bash
       scriptLocation: inlineScript
       resourceGroupName: rg-AZAI-DLUHC-Chatbot-Dev # Added resource group to deploy into existing RG
@@ -53,7 +53,7 @@ steps:
   - task: AzureCLI@2
     displayName: Deploy Application
     inputs:
-      azureSubscription: ubds-development-subscription-service-connection # Change to the service connection to deploy in right subscription
+      azureSubscription: ubds-development-subscription-service-connection-admin.nathan # Change to the service connection to deploy in right subscription
       scriptType: bash
       scriptLocation: inlineScript
       resourceGroupName: rg-AZAI-DLUHC-Chatbot-Dev # Added resource group to deploy into existing RG
