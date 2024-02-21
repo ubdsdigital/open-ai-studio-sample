@@ -53,7 +53,7 @@
         },
         "AzureSearchIndex": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "newindex478902",
             "metadata": {
                 "description": "Name of Azure Search Index"
             }
