@@ -23,7 +23,7 @@ from azure.search.documents import SearchClient
 from azure.ai.formrecognizer import DocumentAnalysisClient
 
 
-from data_utils import chunk_directory
+# from data_utils import chunk_directory
 
 
 def create_search_index(index_name, index_client):
@@ -75,39 +75,39 @@ def create_search_index(index_name, index_client):
         print(f"Search index {index_name} already exists")
 
 
-def upload_documents_to_index(docs, search_client, upload_batch_size=50):
-    to_upload_dicts = []
+# def upload_documents_to_index(docs, search_client, upload_batch_size=50):
+#     to_upload_dicts = []
 
-    id = 0
-    for document in docs:
-        d = dataclasses.asdict(document)
-        # add id to documents
-        d.update({"@search.action": "upload", "id": str(id)})
-        if "contentVector" in d and d["contentVector"] is None:
-            del d["contentVector"]
-        to_upload_dicts.append(d)
-        id += 1
+#     id = 0
+#     for document in docs:
+#         d = dataclasses.asdict(document)
+#         # add id to documents
+#         d.update({"@search.action": "upload", "id": str(id)})
+#         if "contentVector" in d and d["contentVector"] is None:
+#             del d["contentVector"]
+#         to_upload_dicts.append(d)
+#         id += 1
 
-    # Upload the documents in batches of upload_batch_size
-    for i in tqdm(
-        range(0, len(to_upload_dicts), upload_batch_size), desc="Indexing Chunks..."
-    ):
-        batch = to_upload_dicts[i : i + upload_batch_size]
-        results = search_client.upload_documents(documents=batch)
-        num_failures = 0
-        errors = set()
-        for result in results:
-            if not result.succeeded:
-                print(
-                    f"Indexing Failed for {result.key} with ERROR: {result.error_message}"
-                )
-                num_failures += 1
-                errors.add(result.error_message)
-        if num_failures > 0:
-            raise Exception(
-                f"INDEXING FAILED for {num_failures} documents. Please recreate the index."
-                f"To Debug: PLEASE CHECK chunk_size and upload_batch_size. \n Error Messages: {list(errors)}"
-            )
+#     # Upload the documents in batches of upload_batch_size
+#     for i in tqdm(
+#         range(0, len(to_upload_dicts), upload_batch_size), desc="Indexing Chunks..."
+#     ):
+#         batch = to_upload_dicts[i : i + upload_batch_size]
+#         results = search_client.upload_documents(documents=batch)
+#         num_failures = 0
+#         errors = set()
+#         for result in results:
+#             if not result.succeeded:
+#                 print(
+#                     f"Indexing Failed for {result.key} with ERROR: {result.error_message}"
+#                 )
+#                 num_failures += 1
+#                 errors.add(result.error_message)
+#         if num_failures > 0:
+#             raise Exception(
+#                 f"INDEXING FAILED for {num_failures} documents. Please recreate the index."
+#                 f"To Debug: PLEASE CHECK chunk_size and upload_batch_size. \n Error Messages: {list(errors)}"
+#             )
 
 
 def validate_index(index_name, index_client):
@@ -126,41 +126,41 @@ def validate_index(index_name, index_client):
             break
 
 
-def create_and_populate_index(
-    index_name, index_client, search_client, form_recognizer_client, azure_credential, embedding_endpoint
-):
-    # create or update search index with compatible schema
-    create_search_index(index_name, index_client)
+# def create_and_populate_index(
+#     index_name, index_client, search_client, form_recognizer_client, azure_credential, embedding_endpoint
+# ):
+    # # create or update search index with compatible schema
+    # create_search_index(index_name, index_client)
 
-    # chunk directory
-    print("Chunking directory...")
-    result = chunk_directory(
-        "./data",
-        form_recognizer_client=form_recognizer_client,
-        use_layout=True,
-        ignore_errors=False,
-        njobs=1,
-        add_embeddings=True,
-        azure_credential=azd_credential,
-        embedding_endpoint=embedding_endpoint
-    )
+    # # chunk directory
+    # print("Chunking directory...")
+    # result = chunk_directory(
+    #     "./data",
+    #     form_recognizer_client=form_recognizer_client,
+    #     use_layout=True,
+    #     ignore_errors=False,
+    #     njobs=1,
+    #     add_embeddings=True,
+    #     azure_credential=azd_credential,
+    #     embedding_endpoint=embedding_endpoint
+    # )
 
-    if len(result.chunks) == 0:
-        raise Exception("No chunks found. Please check the data path and chunk size.")
+    # if len(result.chunks) == 0:
+    #     raise Exception("No chunks found. Please check the data path and chunk size.")
 
-    print(f"Processed {result.total_files} files")
-    print(f"Unsupported formats: {result.num_unsupported_format_files} files")
-    print(f"Files with errors: {result.num_files_with_errors} files")
-    print(f"Found {len(result.chunks)} chunks")
+    # print(f"Processed {result.total_files} files")
+    # print(f"Unsupported formats: {result.num_unsupported_format_files} files")
+    # print(f"Files with errors: {result.num_files_with_errors} files")
+    # print(f"Found {len(result.chunks)} chunks")
 
-    # upload documents to index
-    print("Uploading documents to index...")
-    upload_documents_to_index(result.chunks, search_client)
+    # # upload documents to index
+    # print("Uploading documents to index...")
+    # upload_documents_to_index(result.chunks, search_client)
 
-    # check if index is ready/validate index
-    print("Validating index...")
-    validate_index(index_name, index_client)
-    print("Index validation completed")
+    # # check if index is ready/validate index
+    # print("Validating index...")
+    # validate_index(index_name, index_client)
+    # print("Index validation completed")
 
 
 if __name__ == "__main__":
@@ -186,16 +186,16 @@ if __name__ == "__main__":
         required=False,
         help="Optional. Use this Azure Cognitive Search account key instead of the current user identity to login (use az login to set current user for Azure)",
     )
-    parser.add_argument(
-        "--formrecognizerservice",
-        required=False,
-        help="Optional. Name of the Azure Form Recognizer service which will be used to extract text, tables and layout from the documents (must exist already)",
-    )
-    parser.add_argument(
-        "--formrecognizerkey",
-        required=False,
-        help="Optional. Use this Azure Form Recognizer account key instead of the current user identity to login (use az login to set current user for Azure)",
-    )
+    # parser.add_argument(
+    #     "--formrecognizerservice",
+    #     required=False,
+    #     help="Optional. Name of the Azure Form Recognizer service which will be used to extract text, tables and layout from the documents (must exist already)",
+    # )
+    # parser.add_argument(
+    #     "--formrecognizerkey",
+    #     required=False,
+    #     help="Optional. Use this Azure Form Recognizer account key instead of the current user identity to login (use az login to set current user for Azure)",
+    # )
     parser.add_argument(
         "--embeddingendpoint",
         required=False,
@@ -213,11 +213,11 @@ if __name__ == "__main__":
     search_creds = (
         default_creds if args.searchkey == None else AzureKeyCredential(args.searchkey)
     )
-    formrecognizer_creds = (
-        default_creds
-        if args.formrecognizerkey == None
-        else AzureKeyCredential(args.formrecognizerkey)
-    )
+    # formrecognizer_creds = (
+    #     default_creds
+    #     if args.formrecognizerkey == None
+    #     else AzureKeyCredential(args.formrecognizerkey)
+    # )
 
     print("Data preparation script started")
     print("Preparing data for index:", args.index)
@@ -226,12 +226,17 @@ if __name__ == "__main__":
     search_client = SearchClient(
         endpoint=search_endpoint, credential=search_creds, index_name=args.index
     )
-    form_recognizer_client = DocumentAnalysisClient(
-        endpoint=f"https://{args.formrecognizerservice}.cognitiveservices.azure.com/",
-        credential=formrecognizer_creds,
-    )
+    # form_recognizer_client = DocumentAnalysisClient(
+    #     endpoint=f"https://{args.formrecognizerservice}.cognitiveservices.azure.com/",
+    #     credential=formrecognizer_creds,
+    # )
     # create_and_populate_index(
     #     args.index, index_client, search_client, form_recognizer_client, azd_credential, args.embeddingendpoint
     # )
     create_search_index(args.index, index_client)
     print("Data preparation for index", args.index, "completed")
+
+    # check if index is ready/validate index
+    print("Validating index...")
+    validate_index(args.index, index_client)
+    print("Index validation completed")

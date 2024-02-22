@@ -17,7 +17,7 @@ param searchServiceName string = ''
 param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
 param searchServiceSkuName string = ''
-param searchIndexName string = 'gptkbindex'
+param searchIndexName string = 'newindex'
 param searchUseSemanticSearch bool = false
 param searchSemanticSearchConfig string = 'default'
 param searchTopK int = 5
@@ -34,7 +34,7 @@ param openAiSkuName string = ''
 param openAIModel string = 'turbo16k'
 param openAIModelName string = 'gpt-35-turbo-16k'
 param openAITemperature int = 0
-param openAITopP int = 1
+param openAITopP int = 1 // Not convinced we should be choosing 1 for this, would like to experiment with slighlty lower values (e.g. 0.7)
 param openAIMaxTokens int = 1000
 param openAIStopSequence string = ''
 param openAISystemMessage string = 'You are an AI assistant that helps people find information.'
@@ -44,10 +44,10 @@ param embeddingDeploymentName string = 'embedding'
 param embeddingModelName string = 'text-embedding-ada-002'
 
 // Used by prepdocs.py: Form recognizer
-param formRecognizerServiceName string = ''
-param formRecognizerResourceGroupName string = ''
-param formRecognizerResourceGroupLocation string = location
-param formRecognizerSkuName string = ''
+// param formRecognizerServiceName string = ''
+// param formRecognizerResourceGroupName string = ''
+// param formRecognizerResourceGroupLocation string = location
+// param formRecognizerSkuName string = ''
 
 // Used for the Azure AD application
 param authClientId string
@@ -97,6 +97,7 @@ module appServicePlan 'core/host/appserviceplan.bicep' = {
 }
 
 // The application frontend
+// Do we need to add CosmosDB settings into appSettings? - see params above and app.py?
 var appServiceName = !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
 var authIssuerUri = '${environment().authentication.loginEndpoint}${tenant().tenantId}/v2.0'
 module backend 'core/host/appservice.bicep' = {
@@ -272,21 +273,21 @@ module searchRoleBackend 'core/security/role.bicep' = {
 }
 
 // For doc prep
-
-module docPrepResources 'docprep.bicep' = {
-  name: 'docprep-resources${resourceToken}'
-  params: {
-    location: location
-    resourceToken: resourceToken
-    tags: tags
-    principalId: principalId
-    resourceGroupName: resourceGroup.name
-    formRecognizerServiceName: formRecognizerServiceName
-    formRecognizerResourceGroupName: formRecognizerResourceGroupName
-    formRecognizerResourceGroupLocation: formRecognizerResourceGroupLocation
-    formRecognizerSkuName: !empty(formRecognizerSkuName) ? formRecognizerSkuName : 'S0'
-  }
-}
+// Commented out since don't need FormRecognizer
+// module docPrepResources 'docprep.bicep' = {
+//   name: 'docprep-resources${resourceToken}'
+//   params: {
+//     location: location
+//     resourceToken: resourceToken
+//     tags: tags
+//     principalId: principalId
+//     resourceGroupName: resourceGroup.name
+//     formRecognizerServiceName: formRecognizerServiceName
+//     formRecognizerResourceGroupName: formRecognizerResourceGroupName
+//     formRecognizerResourceGroupLocation: formRecognizerResourceGroupLocation
+//     formRecognizerSkuName: !empty(formRecognizerSkuName) ? formRecognizerSkuName : 'S0'
+//   }
+// }
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
@@ -327,10 +328,10 @@ output AZURE_OPENAI_PREVIEW_API_VERSION string = openAIApiVersion
 output AZURE_OPENAI_STREAM bool = openAIStream
 
 // Used by prepdocs.py:
-
-output AZURE_FORMRECOGNIZER_SERVICE string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SERVICE
-output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_RESOURCE_GROUP
-output AZURE_FORMRECOGNIZER_SKU_NAME string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SKU_NAME
+// Commented out since don't need FormRecognizer
+// output AZURE_FORMRECOGNIZER_SERVICE string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SERVICE
+// output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_RESOURCE_GROUP
+// output AZURE_FORMRECOGNIZER_SKU_NAME string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SKU_NAME
 
 
 // cosmos
