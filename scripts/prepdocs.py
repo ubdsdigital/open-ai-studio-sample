@@ -20,7 +20,7 @@ from azure.search.documents.indexes.models import (
     HnswParameters
 )
 from azure.search.documents import SearchClient
-from azure.ai.formrecognizer import DocumentAnalysisClient
+# from azure.ai.formrecognizer import DocumentAnalysisClient
 
 
 # from data_utils import chunk_directory
