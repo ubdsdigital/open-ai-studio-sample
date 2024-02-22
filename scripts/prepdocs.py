@@ -32,7 +32,7 @@ def create_search_index(index_name, index_client):
         index = SearchIndex(
             name=index_name,
             fields=[
-                SearchableField(name="id", type="Edm.String", key=True),
+                SearchableField(name="id", type="Edm.String", key=True, analyzer_name="keyword"),
                 SearchableField(
                     name="content", type="Edm.String", analyzer_name="en.lucene"
                 ),
@@ -45,6 +45,7 @@ def create_search_index(index_name, index_client):
                 SearchField(name="contentVector", type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
                             hidden=False, searchable=True, filterable=False, sortable=False, facetable=False,
                             vector_search_dimensions=1536, vector_search_configuration="default"),
+                SearchableField(name="parent_id", type="Edm.String")
             ],
             semantic_settings=SemanticSettings(
                 configurations=[
