@@ -31,12 +31,12 @@ def update_redirect_uris(credential, app_id, uri):
     except Exception as e:
         print(f"Exception: {e.__doc__}")
 
-    print(resp.status)
-    # 200
-    print(resp.data)
-    # b"{\n  "origin": "104.232.115.37"\n}\n"
-    print(resp.headers)
-    # HTTPHeaderDict({"Content-Length": "32", ...})
+    # print(resp.status)
+    # # 200
+    # print(resp.data)
+    # # b"{\n  "origin": "104.232.115.37"\n}\n"
+    # print(resp.headers)
+    # # HTTPHeaderDict({"Content-Length": "32", ...})
 
 
 if __name__ == "__main__":
