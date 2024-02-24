@@ -45,7 +45,7 @@ def create_search_index(index_name, index_client):
                 SearchField(name="contentVector", type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
                             hidden=False, searchable=True, filterable=False, sortable=False, facetable=False,
                             vector_search_dimensions=1536, vector_search_configuration="default"),
-                SearchableField(name="parent_id", type="Edm.String")
+                SearchableField(name="parent_id", type="Edm.String", filterable=True)
             ],
             semantic_settings=SemanticSettings(
                 configurations=[

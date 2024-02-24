@@ -37,7 +37,7 @@ steps:
       scriptLocation: inlineScript
       resourceGroupName: rg-AZAI-DLUHC-Chatbot-Dev # Added resource group to deploy into existing RG
       inlineScript: |
-        azd provision --no-prompt --debug
+        azd provision --no-prompt
     env:
       AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
       AZURE_ENV_NAME: $(AZURE_ENV_NAME)
@@ -58,7 +58,7 @@ steps:
       scriptLocation: inlineScript
       resourceGroupName: rg-AZAI-DLUHC-Chatbot-Dev # Added resource group to deploy into existing RG
       inlineScript: |
-        azd deploy --no-prompt --debug
+        azd deploy --no-prompt
     env:
       AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
       AZURE_ENV_NAME: $(AZURE_ENV_NAME)
