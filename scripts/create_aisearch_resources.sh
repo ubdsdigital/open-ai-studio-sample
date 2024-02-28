@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Running create_ai_search_resources.sh"
 
 # Names
 resource_group_name="rg-rg-AZAI-DLUHC-Chatbot-Dev"
