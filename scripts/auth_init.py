@@ -75,8 +75,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     credential = AzureDeveloperCliCredential()
-
-    print(f"This is args.appid {args.appid}")
+    type_of_args_appid = type(args.appid)
+    print(f"This is args.appid {args.appid} and this is the type {type_of_args_appid}")
 
     if args.appid and args.appid != "no-id":
         print(f"Checking if application {args.appid} exists")
