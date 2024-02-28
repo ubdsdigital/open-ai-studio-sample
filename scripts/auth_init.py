@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     credential = AzureDeveloperCliCredential()
     type_of_args_appid = type(args.appid)
-    print(f"This is args.appid {args.appid} and this is the type {type_of_args_appid}")
+    print(f"This is args.appid '{args.appid}' and this is the type {type_of_args_appid}")
 
     if args.appid and args.appid != "no-id":
         print(f"Checking if application {args.appid} exists")
