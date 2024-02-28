@@ -18,6 +18,7 @@ def check_for_application(credential, app_id):
         f"https://graph.microsoft.com/v1.0/applications/{app_id}",
         headers=get_auth_headers(credential),
     )
+    print(f"This is the app id we check to see if it's created {app_id}") # I think we may be using the wrong id to skip if the WebApp id already exists 
     if resp.status != 200:
         print("Application not found")
         return False
