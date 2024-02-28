@@ -17,7 +17,7 @@ param searchServiceName string = ''
 param searchServiceResourceGroupName string = ''
 param searchServiceResourceGroupLocation string = location
 param searchServiceSkuName string = ''
-param searchIndexName string = 'gptkbindex'
+param searchIndexName string = 'newindex'
 param searchUseSemanticSearch bool = false
 param searchSemanticSearchConfig string = 'default'
 param searchTopK int = 5
@@ -34,7 +34,7 @@ param openAiSkuName string = ''
 param openAIModel string = 'turbo16k'
 param openAIModelName string = 'gpt-35-turbo-16k'
 param openAITemperature int = 0
-param openAITopP int = 1
+param openAITopP int = 1 // Not convinced we should be choosing 1 for this, would like to experiment with slighlty lower values (e.g. 0.7)
 param openAIMaxTokens int = 1000
 param openAIStopSequence string = ''
 param openAISystemMessage string = 'You are an AI assistant that helps people find information.'
@@ -44,10 +44,10 @@ param embeddingDeploymentName string = 'embedding'
 param embeddingModelName string = 'text-embedding-ada-002'
 
 // Used by prepdocs.py: Form recognizer
-param formRecognizerServiceName string = ''
-param formRecognizerResourceGroupName string = ''
-param formRecognizerResourceGroupLocation string = location
-param formRecognizerSkuName string = ''
+// param formRecognizerServiceName string = ''
+// param formRecognizerResourceGroupName string = ''
+// param formRecognizerResourceGroupLocation string = location
+// param formRecognizerSkuName string = ''
 
 // Used for the Azure AD application
 param authClientId string
@@ -62,7 +62,7 @@ param principalId string = ''
 
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
-var tags = { 'azd-env-name': environmentName }
+var tags = { 'azd-env-name': environmentName, 'Application': 'ADO Pipeline Deployment' , 'Department': 'Cloud Platforms', 'Environment': 'Development', 'Owner': 'Nathan Keegan', 'Project': 'AZ AI Chatbot - DLUHC', 'Region': 'UK South', 'Shutdown': 'Never'}
 
 // Organize resources in a resource group
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -97,6 +97,7 @@ module appServicePlan 'core/host/appserviceplan.bicep' = {
 }
 
 // The application frontend
+// Do we need to add CosmosDB settings into appSettings? - see params above and app.py?
 var appServiceName = !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesAppService}backend-${resourceToken}'
 var authIssuerUri = '${environment().authentication.loginEndpoint}${tenant().tenantId}/v2.0'
 module backend 'core/host/appservice.bicep' = {
@@ -202,7 +203,7 @@ module cosmos 'db.bicep' = {
   scope: resourceGroup
   params: {
     accountName: !empty(cosmosAccountName) ? cosmosAccountName : '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
-    location: 'eastus'
+    location: 'uksouth'
     tags: tags
     principalIds: [principalId, backend.outputs.identityPrincipalId]
   }
@@ -212,41 +213,41 @@ module cosmos 'db.bicep' = {
 // USER ROLES
 module openAiRoleUser 'core/security/role.bicep' = {
   scope: openAiResourceGroup
-  name: 'openai-role-user'
+  name: 'openai-role-sp'
   params: {
     principalId: principalId
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-    principalType: 'User'
+    principalType: 'ServicePrincipal'
   }
 }
 
 module searchRoleUser 'core/security/role.bicep' = {
   scope: searchServiceResourceGroup
-  name: 'search-role-user'
+  name: 'search-role-sp'
   params: {
     principalId: principalId
     roleDefinitionId: '1407120a-92aa-4202-b7e9-c0e197c71c8f'
-    principalType: 'User'
+    principalType: 'ServicePrincipal'
   }
 }
 
 module searchIndexDataContribRoleUser 'core/security/role.bicep' = {
   scope: searchServiceResourceGroup
-  name: 'search-index-data-contrib-role-user'
+  name: 'search-index-data-contrib-role-sp'
   params: {
     principalId: principalId
     roleDefinitionId: '8ebe5a00-799e-43f5-93ac-243d3dce84a7'
-    principalType: 'User'
+    principalType: 'ServicePrincipal'
   }
 }
 
 module searchServiceContribRoleUser 'core/security/role.bicep' = {
   scope: searchServiceResourceGroup
-  name: 'search-service-contrib-role-user'
+  name: 'search-service-contrib-role-sp'
   params: {
     principalId: principalId
     roleDefinitionId: '7ca78c08-252a-4471-8644-bb5ff32d4ba0'
-    principalType: 'User'
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -272,23 +273,25 @@ module searchRoleBackend 'core/security/role.bicep' = {
 }
 
 // For doc prep
-module docPrepResources 'docprep.bicep' = {
-  name: 'docprep-resources${resourceToken}'
-  params: {
-    location: location
-    resourceToken: resourceToken
-    tags: tags
-    principalId: principalId
-    resourceGroupName: resourceGroup.name
-    formRecognizerServiceName: formRecognizerServiceName
-    formRecognizerResourceGroupName: formRecognizerResourceGroupName
-    formRecognizerResourceGroupLocation: formRecognizerResourceGroupLocation
-    formRecognizerSkuName: !empty(formRecognizerSkuName) ? formRecognizerSkuName : 'S0'
-  }
-}
+// Commented out since don't need FormRecognizer
+// module docPrepResources 'docprep.bicep' = {
+//   name: 'docprep-resources${resourceToken}'
+//   params: {
+//     location: location
+//     resourceToken: resourceToken
+//     tags: tags
+//     principalId: principalId
+//     resourceGroupName: resourceGroup.name
+//     formRecognizerServiceName: formRecognizerServiceName
+//     formRecognizerResourceGroupName: formRecognizerResourceGroupName
+//     formRecognizerResourceGroupLocation: formRecognizerResourceGroupLocation
+//     formRecognizerSkuName: !empty(formRecognizerSkuName) ? formRecognizerSkuName : 'S0'
+//   }
+// }
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
 output AZURE_RESOURCE_GROUP string = resourceGroup.name
+
 
 output BACKEND_URI string = backend.outputs.uri
 
@@ -325,9 +328,11 @@ output AZURE_OPENAI_PREVIEW_API_VERSION string = openAIApiVersion
 output AZURE_OPENAI_STREAM bool = openAIStream
 
 // Used by prepdocs.py:
-output AZURE_FORMRECOGNIZER_SERVICE string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SERVICE
-output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_RESOURCE_GROUP
-output AZURE_FORMRECOGNIZER_SKU_NAME string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SKU_NAME
+// Commented out since don't need FormRecognizer
+// output AZURE_FORMRECOGNIZER_SERVICE string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SERVICE
+// output AZURE_FORMRECOGNIZER_RESOURCE_GROUP string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_RESOURCE_GROUP
+// output AZURE_FORMRECOGNIZER_SKU_NAME string = docPrepResources.outputs.AZURE_FORMRECOGNIZER_SKU_NAME
+
 
 // cosmos
 output AZURE_COSMOSDB_ACCOUNT string = cosmos.outputs.accountName

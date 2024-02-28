@@ -1,4 +1,4 @@
-param name string
+param name string = 'newindex'
 param location string = resourceGroup().location
 param tags object = {}
 
@@ -7,7 +7,7 @@ param sku object = {
 }
 
 param authOptions object = {}
-param semanticSearch string = 'disabled'
+param semanticSearch string = 'enabled'
 
 resource search 'Microsoft.Search/searchServices@2021-04-01-preview' = {
   name: name

@@ -53,7 +53,7 @@
         },
         "AzureSearchIndex": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "newindex478902",
             "metadata": {
                 "description": "Name of Azure Search Index"
             }
@@ -253,7 +253,7 @@
         },
         "WebAppEnableChatHistory": {
             "type": "bool",
-            "defaultValue": false,
+            "defaultValue": true,
             "metadata": {
                 "description": "Enable chat history by deploying a Cosmos DB instance"
             }

@@ -22,7 +22,7 @@ param kind string = 'app,linux'
 // Microsoft.Web/sites/config
 param allowedOrigins array = []
 param alwaysOn bool = true
-param appCommandLine string = ''
+param appCommandLine string = 'python3 -m gunicorn app:app'
 param appSettings object = {}
 param authClientId string
 @secure()
