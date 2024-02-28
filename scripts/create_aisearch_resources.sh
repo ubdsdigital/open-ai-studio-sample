@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Grant execute permissions
+chmod +x ./scripts/create_aisearch_resources.sh
+
 # Names
 resource_group_name="rg-rg-AZAI-DLUHC-Chatbot-Dev"
 aisearch_resource_name="gptkb-j253mq57f222s"
