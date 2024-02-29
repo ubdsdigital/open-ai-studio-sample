@@ -53,9 +53,9 @@
         },
         "AzureSearchIndex": {
             "type": "string",
-            "defaultValue": "newindex478902",
+            "defaultValue": "defaultindexname",
             "metadata": {
-                "description": "Name of Azure Search Index"
+                "description": "Name of Azure Search Index. This is used when an index name isn't provided in the deployment"
             }
         },
         "AzureSearchKey": {
