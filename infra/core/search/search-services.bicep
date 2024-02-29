@@ -1,4 +1,4 @@
-param name string = 'newindex'
+param name string = 'api-script-index' // changed from 'newindex' to api-index-script
 param location string = resourceGroup().location
 param tags object = {}
 
