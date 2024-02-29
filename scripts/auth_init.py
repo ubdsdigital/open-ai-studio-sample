@@ -17,7 +17,7 @@ def check_for_application(credential, app_id):
         "GET",
         f"https://graph.microsoft.com/v1.0/applications/{app_id}",
         headers=get_auth_headers(credential),
-    )
+    ) 
     if resp.status != 200:
         print("Application not found")
         return False
@@ -75,6 +75,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     credential = AzureDeveloperCliCredential()
+    type_of_args_appid = type(args.appid)
+    print(f"This is args.appid '{args.appid}' and this is the type {type_of_args_appid}")
 
     if args.appid and args.appid != "no-id":
         print(f"Checking if application {args.appid} exists")

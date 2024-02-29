@@ -11,6 +11,7 @@ emedding_model_name="embedding"
 storage_account_name="azai2839304chatbot"
 blob_container_name="content"
 
+# Names of resources that get created in the AI Search service 
 datasource_name="api-datasource-script"
 skillset_name="api-skillset-script"
 indexer_name="api-indexer-script"
