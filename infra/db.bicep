@@ -2,8 +2,8 @@ param accountName string
 param location string = resourceGroup().location
 param tags object = {}
 
-param databaseName string = 'db_conversation_history'
-param collectionName string = 'conversations'
+param databaseName string
+param collectionName string
 param principalIds array = []
 
 param containers array = [

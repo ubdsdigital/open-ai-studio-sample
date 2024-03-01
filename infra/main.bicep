@@ -63,6 +63,9 @@ param principalId string = ''
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName, 'Application': 'ADO Pipeline Deployment' , 'Department': 'Cloud Platforms', 'Environment': 'Development', 'Owner': 'Nathan Keegan', 'Project': 'AZ AI Chatbot - DLUHC', 'Region': 'UK South', 'Shutdown': 'Never'}
+var cosmosdb_account_name = !empty(cosmosAccountName) ? cosmosAccountName : '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
+var cosmosdb_database_name = 'db_conversation_history'
+var cosmosdb_container_name = 'conversations'
 
 // Organize resources in a resource group
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -140,6 +143,11 @@ module backend 'core/host/appservice.bicep' = {
       AZURE_OPENAI_SYSTEM_MESSAGE: openAISystemMessage
       AZURE_OPENAI_PREVIEW_API_VERSION: openAIApiVersion
       AZURE_OPENAI_STREAM: openAIStream
+
+      //cosmosdb
+      AZURE_COSMOSDB_ACCOUNT: cosmosdb_account_name
+      AZURE_COSMOSDB_DATABASE: cosmosdb_database_name
+      AZURE_COSMOSDB_CONVERSATIONS_CONTAINER: cosmosdb_container_name
     }
   }
 }
@@ -202,10 +210,12 @@ module cosmos 'db.bicep' = {
   name: 'cosmos'
   scope: resourceGroup
   params: {
-    accountName: !empty(cosmosAccountName) ? cosmosAccountName : '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
-    location: 'uksouth'
+    accountName: cosmosdb_account_name
+    location: location
     tags: tags
     principalIds: [principalId, backend.outputs.identityPrincipalId]
+    databaseName: cosmosdb_database_name
+    collectionName: cosmosdb_container_name
   }
 }
 
