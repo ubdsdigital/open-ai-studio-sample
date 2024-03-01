@@ -15,7 +15,7 @@ def get_auth_headers(credential):
 def check_for_application(credential, app_id):
     resp = urllib3.request(
         "GET",
-        f"https://graph.microsoft.com/v1.0/applications/{app_id}",
+        f"https://graph.microsoft.com/v1.0/applications(appId='{app_id}'",
         headers=get_auth_headers(credential),
     ) 
     if resp.status != 200:
